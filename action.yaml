@@ -31,10 +31,10 @@ runs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.SAKURACR_REGISTRY }}/hako/hako-customer:${{ github.repository }}/${{ github.ref }}
+        tags: ${{ secrets.SAKURACR_REGISTRY }}/hako/hako-customer:${{ github.repository_owner }}-${{ github.event.repository.name }-${{ github.ref_name }}
 
     - name: SAKURA_API_TOKENをセット
-      runs: |
+      run: |
         echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
         echo "SAKURA_API_SECRET=${{ secrets.SAKURA_API_SECRET }}" >> $GITHUB_ENV
     - name: Call
