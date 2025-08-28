@@ -1,0 +1,6 @@
+name: hako JavaScript action
+description: hakoのJavaScriptプログラムを実行します
+
+runs:
+  using: node20
+  main: ../dist/index.js
