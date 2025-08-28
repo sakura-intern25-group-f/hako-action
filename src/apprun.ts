@@ -40,7 +40,6 @@ export async function createAppRun (params:{
     ],
   };
 
-
   const res = await fetch(SAKURA_API_URL, {
     method: "POST",
     headers: {
