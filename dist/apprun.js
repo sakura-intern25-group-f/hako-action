@@ -21,7 +21,10 @@ async function createAppRun(params) {
                         image: params.image,
                     },
                 },
-                env: Object.entries(params.envVars).map(([key, value]) => ({ key, value })),
+                env: Object.entries(params.envVars).map(([key, value]) => ({
+                    key,
+                    value,
+                })),
                 probe: {
                     http_get: {
                         path: "/",
@@ -50,7 +53,7 @@ async function deleteAppRun(appID) {
     const res = await fetch(url, {
         method: "DELETE",
         headers: {
-            "Authorization": "Basic " + btoa(`${SAKURA_API_TOKEN}:${SAKURA_API_SECRET}`),
+            Authorization: "Basic " + btoa(`${SAKURA_API_TOKEN}:${SAKURA_API_SECRET}`),
         },
     });
     if (res.ok) {
