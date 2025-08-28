@@ -26,16 +26,24 @@ runs:
         username: ${{ secrets.SAKURACR_USER }}
         password: ${{ secrets.SAKURACR_PASSWORD }}
 
+    - name: 環境変数をセット
+      run: |
+        echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
+        echo "SAKURA_API_SECRET=${{ secrets.SAKURA_API_SECRET }}" >> $GITHUB_ENV
+
+        echo "SAKURACR_REGISTRY=${{ secrets.SAKURACR_REGISTRY }}" >> $GITHUB_ENV
+        echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
+        echo "REPOSITORY=${{ github.event.repository.name }}" >> $GITHUB_ENV
+        echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+        echo "DOCKER_IMAGE=${{ secrets.SAKURACR_REGISTRY }}/hako/hako-customer:${{ github.repository_owner }}-${{ github.event.repository.name }-${{ github.ref_name }}" >> $GITHUB_ENV
+        echo "PORT=${{ inputs.port }}" >> $GITHUB_ENV
+
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
         context: .
         push: true
-        tags: ${{ secrets.SAKURACR_REGISTRY }}/hako/hako-customer:${{ github.repository_owner }}-${{ github.event.repository.name }-${{ github.ref_name }}
+        tags: ${{ env.DOCKER_IMAGE }}
 
-    - name: SAKURA_API_TOKENをセット
-      run: |
-        echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
-        echo "SAKURA_API_SECRET=${{ secrets.SAKURA_API_SECRET }}" >> $GITHUB_ENV
     - name: Call
       uses: ./js-action
