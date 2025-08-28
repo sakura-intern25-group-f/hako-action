@@ -17,8 +17,6 @@ async function run() {
     const branch = process.env.BRANCH!;
 
     const envVars: Record<string, string> = {
-      SAKURA_API_TOKEN: process.env.SAKURA_API_TOKEN!,
-      SAKURA_API_SECRET: process.env.SAKURA_API_SECRET!,
       OWNER: owner,
       REPOSITORY: repo,
       BRANCH: branch,
