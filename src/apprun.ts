@@ -8,7 +8,10 @@ export async function createAppRun (params:{
   branch: string
   }) 
   {
+
   const SAKURA_API_TOKEN = process.env.SAKURA_API_TOKEN;
+  const SAKURA_API_SECRET = process.env.SAKURA_API_SECRET;
+
   if (!SAKURA_API_TOKEN) {
     throw new Error("SAKURA_API_TOKENが設定されていません");
   }
@@ -16,8 +19,7 @@ export async function createAppRun (params:{
   const SAKURA_API_URL = "https://secure.sakura.ad.jp/cloud/api/apprun/1.0/apprun/api/applications";
 
   const payload = {
-    name: `apprun-${params.owner}/${params.repo}@${params.branch}`,
-    port: params.port,
+    name: `apprun-${params.owner}-${params.repo}-${params.branch}`,
     components: [
       {
         name: "Component01",
@@ -44,7 +46,7 @@ const res = await fetch(SAKURA_API_URL, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${SAKURA_API_TOKEN}`,
+    Authorization: "Basic " + btoa(`${SAKURA_API_TOKEN}:${SAKURA_API_SECRET}`),
   },
   body: JSON.stringify(payload),
 });
