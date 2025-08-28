@@ -34,6 +34,8 @@ runs:
         tags: ${{ secrets.SAKURACR_REGISTRY }}/hako/hako-customer:${{ github.repository }}/${{ github.ref }}
 
     - name: SAKURA_API_TOKENをセット
-      runs: echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
+      runs: |
+        echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
+        echo "SAKURA_API_SECRET=${{ secrets.SAKURA_API_SECRET }}" >> $GITHUB_ENV
     - name: Call
       uses: ./js-action
