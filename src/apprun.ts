@@ -54,7 +54,7 @@ export async function createAppRun(params: {
   });
 
   if (res.ok) {
-    addPRComment(params.repo, params.owner, params.prNumber, `🎉 ステージング環境が作成されました！: ${res.public_url}`);
+    addPRComment(params.repo, params.owner, params.prNumber, `🎉 ステージング環境が作成されました！: ${res.body.public_url}`);
     return await res.json();
   }
 
