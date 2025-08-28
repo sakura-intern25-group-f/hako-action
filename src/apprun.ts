@@ -2,22 +2,26 @@
 export async function createAppRun (params:{
   image: string,
   envVars: Record<string, string>,
+  port: number,
+  owner: string,
+  repo: string,
+  branch: string
   }) 
   {
   const SAKURA_API_TOKEN = process.env.SAKURA_API_TOKEN;
   if (!SAKURA_API_TOKEN) {
-    throw new Error("SAKURA_API_TOKEN が設定されていません");
+    throw new Error("SAKURA_API_TOKENが設定されていません");
   }
 
   const SAKURA_API_URL = "https://secure.sakura.ad.jp/cloud/api/apprun/1.0/apprun/api/applications";
 
   const payload = {
-    name: "apprun-" + Math.random().toString(36).substring(2, 8),
-    port: 8080,
+    name: "apprun-" + params.owner + params.repo + params.branch,
+    port: params.port,
     components: [
       {
         name: "Component01",
-        max_cpu: "0.25",
+        max_cpu: "0.3",
         max_memory: "512Mi",
         deploy_source: {
           container_registry: {
@@ -28,7 +32,7 @@ export async function createAppRun (params:{
         probe: {
           http_get: {
             path: "/",
-            port: 8080,
+            port: params.port,
           },
         },
       },
@@ -36,32 +40,21 @@ export async function createAppRun (params:{
   };
 
 
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(SAKURA_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${SAKURA_API_TOKEN}`,
-      },
-      body: JSON.stringify(payload),
-      
-    });
+const res = await fetch(SAKURA_API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${SAKURA_API_TOKEN}`,
+  },
+  body: JSON.stringify(payload),
+});
 
-    const text = await res.text();
-    if (res.ok) {
-      try {
-        return JSON.parse(text); // 作成されたオブジェクト（id, urlなど）
-      } catch (e) {
-        throw new Error("Invalid JSON from AppRun: " + text);
-      }
-    }
+if (res.ok) {
+  return await res.json(); 
+}
 
-    // 失敗時: ログを残して再試行 or エラーを投げる
-    console.error(`AppRun create failed (attempt ${attempt}):`, res.status, text);
-    if (attempt < 3) {
-      await new Promise((r) => setTimeout(r, 1000 * attempt)); // 簡単なバックオフ
-      continue;
-    }
-    throw new Error(`AppRun create failed after retries: ${res.status} ${text}`);
-  }
+const text = await res.text(); //エラーメッセージは文字列で取りたい
+throw new Error(`AppRun create failed: ${res.status} ${text}`);
+
+
 }
