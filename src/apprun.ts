@@ -54,7 +54,7 @@ export async function createAppRun(params: {
   });
 
   if (res.ok) {
-    addPRComment(params.prNumber, `🎉 ステージング環境が作成されました！: ${res.public_url}`);
+    addPRComment(params.repo, params.owner, params.prNumber, `🎉 ステージング環境が作成されました！: ${res.public_url}`);
     return await res.json();
   }
 
@@ -81,10 +81,12 @@ export async function deleteAppRun(appID: string) {
   throw new Error(`AppRun delete failed: ${res.status} ${text}`);
 }
 
-export async function addPRComment(prNumber: string, body: string) {
+export async function addPRComment(repo:string, owner:string, prNumber: string, body: string) {
   const url = `${APP_SERVER_BASE}/pr-comment`;
 
   const payload = {
+    repo,
+    owner,
     prNumber,
     body,
   };
