@@ -1,0 +1,41 @@
+name: hako staging action
+author: sakura-intern-group-f
+description: ステージング環境をAppRunに自動デプロイします
+
+inputs:
+  token:
+    description: リポジトリをクローンするためのGitHubトークン
+    required: true
+  port:
+    description: Port number of your application
+    required: false
+    default: 80
+
+runs:
+  using: composite
+  steps:
+    - name: 顧客のリポジトリをcheckout
+      uses: actions/checkout@v5
+      with:
+        token: ${{ inputs.token }}
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ secrets.SAKURACR_REGISTRY }}
+        username: ${{ secrets.SAKURACR_USER }}
+        password: ${{ secrets.SAKURACR_PASSWORD }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.SAKURACR_REGISTRY }}/hako/hako-customer:${{ github.repository_owner }}-${{ github.event.repository.name }-${{ github.ref_name }}
+
+    - name: SAKURA_API_TOKENをセット
+      run: |
+        echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
+        echo "SAKURA_API_SECRET=${{ secrets.SAKURA_API_SECRET }}" >> $GITHUB_ENV
+    - name: Call
+      uses: ./js-action
