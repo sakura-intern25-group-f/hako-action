@@ -15,6 +15,7 @@ async function run() {
     const owner = process.env.OWNER!;
     const repo = process.env.REPOSITORY!;
     const branch = process.env.BRANCH!;
+    const prNumber = process.env.PR_NUMBER!;
 
     const envVars: Record<string, string> = {
       OWNER: owner,
@@ -28,6 +29,7 @@ async function run() {
       owner,
       repo,
       branch,
+      prNumber,
       port,
     });
 

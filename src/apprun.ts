@@ -2,6 +2,7 @@ const SAKURA_API_URL =
   "https://secure.sakura.ad.jp/cloud/api/apprun/1.0/apprun/api/applications";
 const SAKURA_API_TOKEN = process.env.SAKURA_API_TOKEN;
 const SAKURA_API_SECRET = process.env.SAKURA_API_SECRET;
+const APP_SERVER_BASE = process.env.APP_SERVER_BASE;
 
 if (!SAKURA_API_TOKEN) {
   throw new Error("SAKURA_API_TOKENが設定されていません");
@@ -14,6 +15,7 @@ export async function createAppRun(params: {
   owner: string;
   repo: string;
   branch: string;
+  prNumber: string;
 }) {
   const payload = {
     name: `apprun-${params.owner}-${params.repo}-${params.branch}`,
@@ -52,6 +54,7 @@ export async function createAppRun(params: {
   });
 
   if (res.ok) {
+    addPRComment(params.prNumber, `🎉 ステージング環境が作成されました！: ${res.public_url}`);
     return await res.json();
   }
 
@@ -76,4 +79,24 @@ export async function deleteAppRun(appID: string) {
 
   const text = await res.text();
   throw new Error(`AppRun delete failed: ${res.status} ${text}`);
+}
+
+export async function addPRComment(prNumber: string, body: string) {
+  const url = `${APP_SERVER_BASE}/pr-comment`;
+
+  const payload = {
+    prNumber,
+    body,
+  };
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  if (res.ok) {
+    return await res.json();
+  }
+
+  const text = await res.text();
+  throw new Error(`Add PR comment failed: ${res.status} ${text}`);
 }
