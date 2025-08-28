@@ -1,4 +1,6 @@
 
+const SAKURA_API_URL = "https://secure.sakura.ad.jp/cloud/api/apprun/1.0/apprun/api/applications";
+
 export async function createAppRun (params:{
   image: string,
   envVars: Record<string, string>,
@@ -16,7 +18,6 @@ export async function createAppRun (params:{
     throw new Error("SAKURA_API_TOKENが設定されていません");
   }
 
-  const SAKURA_API_URL = "https://secure.sakura.ad.jp/cloud/api/apprun/1.0/apprun/api/applications";
 
   const payload = {
     name: `apprun-${params.owner}-${params.repo}-${params.branch}`,
