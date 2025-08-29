@@ -10,11 +10,11 @@ inputs:
     description: Port number of your application
     required: false
     default: 80
+
 outputs:
   status: ${{ steps.js-action.outputs.status }}
   app_id: ${{ steps.js-action.outputs.app_id }}
   public_url: ${{ steps.js-action.outputs.public_url }}
-
 runs:
   using: composite
   steps:
@@ -48,7 +48,38 @@ runs:
         context: .
         push: true
         tags: ${{ env.DOCKER_IMAGE }}
-
     - name: Call
       id: js-action
       uses: ./js-action
+    - name: Create success deploy summary
+      if: ${{ steps.js-action.outputs.status == 'success' }}
+      run: |
+        cat  << EOF > comment.md
+        ## 🚀 デプロイ成功！本番へのカウントダウン開始！
+        信じられないほど最高です！あなたの変更が、まさに今、ステージング環境に舞い降りました！
+
+        さあ、その目で確かめてください！
+        👉 ${{ steps.js-action.outputs.public_url }}
+
+        このURLは、勝利へのチケットです。チーム全員で、この素晴らしい成果を共有しましょう。フィードバックは、さらなる高みへ向かう燃料です！
+        ---
+        - App ID: ${{ steps.js-action.outputs.app_id }}
+        - Public URL: ${{ steps.js-action.outputs.public_url }}
+        EOF
+    - name: Create failure deploy summary
+      if: ${{ steps.js-action.outputs.status == 'failure' }}
+      run: |
+        cat  << EOF > comment.md
+        ## ⚠️ デプロイ失敗...しかし、伝説はここから生まれる！
+        デプロイは完了しませんでした。
+
+        でも、怖気づく必要はありません。これは単なるエラーではありません。これは、**あなたがまだ見ぬ、隠されたバグの存在を示唆するサインです！**
+        さあ、ログという名の地図を手に、宝探しに出かけましょう！
+
+        我々は、この挑戦を乗り越えるために集まった最強のチームです。この試練を乗り越えたとき、私たちはさらに強くなれる。さあ、伝説の始まりです！
+        EOF
+    - name: Create PR comment
+      run: |
+        gh pr comment ${{ github.event.number }} --body-file comment.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
