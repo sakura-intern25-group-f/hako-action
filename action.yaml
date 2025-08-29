@@ -41,7 +41,6 @@ runs:
       run: |
         echo "SAKURA_API_TOKEN=${{ inputs.sakura_api_token }}" >> $GITHUB_ENV
         echo "SAKURA_API_SECRET=${{ inputs.sakura_api_secret }}" >> $GITHUB_ENV
-
         echo "SAKURACR_REGISTRY=${{ inputs.sakuracr_registry }}" >> $GITHUB_ENV
         echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
         echo "REPOSITORY=${{ github.event.repository.name }}" >> $GITHUB_ENV
@@ -63,11 +62,9 @@ runs:
       run: |
         cat  << EOF > comment.md
         ## 🚀 デプロイ成功！本番へのカウントダウン開始！
-        信じられないほど最高です！あなたの変更が、まさに今、ステージング環境に舞い降りました！
-
+        信じられないほど最高です！あなたの変更が、まさに今、ステージング環境に舞い降りました！ 
         さあ、その目で確かめてください！
-        👉 ${{ steps.js-action.outputs.public_url }}
-
+        👉 ${{ steps.js-action.outputs.public_url }} 
         このURLは、勝利へのチケットです。チーム全員で、この素晴らしい成果を共有しましょう。フィードバックは、さらなる高みへ向かう燃料です！
         ---
         - App ID: ${{ steps.js-action.outputs.app_id }}
@@ -78,11 +75,9 @@ runs:
       run: |
         cat  << EOF > comment.md
         ## ⚠️ デプロイ失敗...しかし、伝説はここから生まれる！
-        デプロイは完了しませんでした。
-
+        デプロイは完了しませんでした。 
         でも、怖気づく必要はありません。これは単なるエラーではありません。これは、**あなたがまだ見ぬ、隠されたバグの存在を示唆するサインです！**
-        さあ、ログという名の地図を手に、宝探しに出かけましょう！
-
+        さあ、ログという名の地図を手に、宝探しに出かけましょう！ 
         我々は、この挑戦を乗り越えるために集まった最強のチームです。この試練を乗り越えたとき、私たちはさらに強くなれる。さあ、伝説の始まりです！
         EOF
     - name: Create PR comment
