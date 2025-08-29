@@ -38,6 +38,7 @@ runs:
         password: ${{ inputs.sakuracr_password }}
 
     - name: 環境変数をセット
+      shell: bash
       run: |
         echo "SAKURA_API_TOKEN=${{ inputs.sakura_api_token }}" >> $GITHUB_ENV
         echo "SAKURA_API_SECRET=${{ inputs.sakura_api_secret }}" >> $GITHUB_ENV
@@ -45,7 +46,7 @@ runs:
         echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
         echo "REPOSITORY=${{ github.event.repository.name }}" >> $GITHUB_ENV
         echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
-        echo "DOCKER_IMAGE=${{ inputs.sakuracr_registry }}/hako/hako-customer:${{ github.repository_owner }}_${{ github.event.repository.name }_${{ github.ref_name }}" >> $GITHUB_ENV
+        echo "DOCKER_IMAGE=${{ inputs.sakuracr_registry }}/hako/hako-customer:${{ github.repository_owner }}-${{ github.event.repository.name }}-${{ github.ref_name }}" >> $GITHUB_ENV
         echo "PORT=${{ inputs.port }}" >> $GITHUB_ENV
 
     - name: Build and push
@@ -58,6 +59,7 @@ runs:
       id: js-action
       uses: ./js-action
     - name: Create success deploy summary
+      shell: bash
       if: ${{ steps.js-action.outputs.status == 'success' }}
       run: |
         cat  << EOF > comment.md
@@ -71,6 +73,7 @@ runs:
         - Public URL: ${{ steps.js-action.outputs.public_url }}
         EOF
     - name: Create failure deploy summary
+      shell: bash
       if: ${{ steps.js-action.outputs.status == 'failure' }}
       run: |
         cat  << EOF > comment.md
@@ -81,12 +84,8 @@ runs:
         我々は、この挑戦を乗り越えるために集まった最強のチームです。この試練を乗り越えたとき、私たちはさらに強くなれる。さあ、伝説の始まりです！
         EOF
     - name: Create PR comment
+      shell: bash
       run: |
         gh pr comment ${{ github.event.number }} --body-file comment.md
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
-    - name: Upload ID
-      uses: actions/upload-artifact@v3
-      with:
-        name: apprun-id-${{ github.event.pull_request.number }}
-        path: ./apprun-id.txt
