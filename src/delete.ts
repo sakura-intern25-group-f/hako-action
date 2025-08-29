@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import { deleteAppRun } from "./apprun";
-import fs from 'fs';
+import fs from "fs";
 
 try {
   core.debug("delete run!");
@@ -10,7 +10,7 @@ try {
 
 async function run() {
   try {
-    const appId = fs.readFileSync(process.env.APP_ID!, 'utf-8');
+    const appId = fs.readFileSync(process.env.APP_ID!, "utf-8");
     if (!appId) {
       throw new Error("APP_IDが設定されていません");
     }
@@ -18,7 +18,6 @@ async function run() {
     const result = await deleteAppRun(appId);
 
     core.info(result.message);
-
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message);
