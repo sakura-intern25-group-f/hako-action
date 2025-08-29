@@ -1,0 +1,30 @@
+name: delete AppRun
+author: sakura-intern-group-f
+description: ステージング環境であるAppRunを削除します
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete-apprun:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 
+      - uses: actions/checkout@v5
+
+      - name: download AppRun ID artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: apprun-id-${{ github.event.pull_request.number }}
+          path: ./
+
+      - name: 環境変数をセット
+        run: |
+          echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
+          echo "SAKURA_API_SECRET=${{ secrets.SAKURA_API_SECRET }}" >> $GITHUB_ENV
+
+      - name: delete AppRun
+        uses: ./js-delete-action
+        env:
+          APP_ID: ./apprun-id.txt

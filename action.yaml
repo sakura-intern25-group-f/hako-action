@@ -47,3 +47,9 @@ runs:
 
     - name: Call
       uses: ./js-action
+
+    - name: Upload ID
+      uses: actions/upload-artifact@v3
+      with:
+        name: apprun-id-${{ github.event.pull_request.number }}
+        path: ./apprun-id.txt
