@@ -78,7 +78,7 @@ runs:
       run: |
         gh pr comment ${{ github.event.number }} --body-file comment.md
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
     - name: Upload ID
       uses: actions/upload-artifact@v3
       with:
