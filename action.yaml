@@ -11,6 +11,17 @@ inputs:
     required: false
     default: 80
 
+  sakuracr_registry:
+    required: true
+  sakuracr_user:
+    required: true
+  sakuracr_password:
+    required: true
+  sakura_api_token:
+    required: true
+  sakura_api_secret:
+    required: true
+
 runs:
   using: composite
   steps:
@@ -22,20 +33,20 @@ runs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        registry: ${{ secrets.SAKURACR_REGISTRY }}
-        username: ${{ secrets.SAKURACR_USER }}
-        password: ${{ secrets.SAKURACR_PASSWORD }}
+        registry: ${{ inputs.sakuracr_registry }}
+        username: ${{ inputs.sakuracr_user }}
+        password: ${{ inputs.sakuracr_password }}
 
     - name: 環境変数をセット
       run: |
-        echo "SAKURA_API_TOKEN=${{ secrets.SAKURA_API_TOKEN }}" >> $GITHUB_ENV
-        echo "SAKURA_API_SECRET=${{ secrets.SAKURA_API_SECRET }}" >> $GITHUB_ENV
+        echo "SAKURA_API_TOKEN=${{ inputs.sakura_api_token }}" >> $GITHUB_ENV
+        echo "SAKURA_API_SECRET=${{ inputs.sakura_api_secret }}" >> $GITHUB_ENV
 
-        echo "SAKURACR_REGISTRY=${{ secrets.SAKURACR_REGISTRY }}" >> $GITHUB_ENV
+        echo "SAKURACR_REGISTRY=${{ inputs.sakuracr_registry }}" >> $GITHUB_ENV
         echo "OWNER=${{ github.repository_owner }}" >> $GITHUB_ENV
         echo "REPOSITORY=${{ github.event.repository.name }}" >> $GITHUB_ENV
         echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
-        echo "DOCKER_IMAGE=${{ secrets.SAKURACR_REGISTRY }}/hako/hako-customer:${{ github.repository_owner }}-${{ github.event.repository.name }-${{ github.ref_name }}" >> $GITHUB_ENV
+        echo "DOCKER_IMAGE=${{ inputs.sakuracr_registry }}/hako/hako-customer:${{ github.repository_owner }}-${{ github.event.repository.name }-${{ github.ref_name }}" >> $GITHUB_ENV
         echo "PORT=${{ inputs.port }}" >> $GITHUB_ENV
 
     - name: Build and push
