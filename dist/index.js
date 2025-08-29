@@ -35,7 +35,6 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const apprun_1 = require("./apprun");
-//import { deleteAppRun } from './apprun'; 
 try {
     core.debug("run!");
 }
@@ -50,8 +49,6 @@ async function run() {
         const repo = process.env.REPOSITORY;
         const branch = process.env.BRANCH;
         const envVars = {
-            SAKURA_API_TOKEN: process.env.SAKURA_API_TOKEN,
-            SAKURA_API_SECRET: process.env.SAKURA_API_SECRET,
             OWNER: owner,
             REPOSITORY: repo,
             BRANCH: branch,
@@ -65,14 +62,22 @@ async function run() {
             port,
         });
         core.info(`AppRun created: ${app.id} at ${app.url}`);
+        if (app.id && app.public_url) {
+            core.setOutput("AppRun App ID: ", app.id);
+            core.info(`AppRun public URL: ${app.public_url}`);
+            core.setOutput("app_id", app.id);
+            core.setOutput("public_url", app.public_url);
+        }
+        core.setOutput("status", "success");
     }
     catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message);
         }
         else {
-            core.setFailed('Unknown error');
+            core.setFailed("Unknown error");
         }
+        core.setOutput("status", "failure");
     }
 }
 run();

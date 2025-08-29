@@ -10,6 +10,10 @@ inputs:
     description: Port number of your application
     required: false
     default: 80
+outputs:
+  status: ${{ steps.js-action.outputs.status }}
+  app_id: ${{ steps.js-action.outputs.app_id }}
+  public_url: ${{ steps.js-action.outputs.public_url }}
 
 runs:
   using: composite
@@ -46,4 +50,5 @@ runs:
         tags: ${{ env.DOCKER_IMAGE }}
 
     - name: Call
+      id: js-action
       uses: ./js-action

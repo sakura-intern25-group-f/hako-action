@@ -1,6 +1,5 @@
 import * as core from "@actions/core";
-import { createAppRun } from './apprun'; 
-//import { deleteAppRun } from './apprun'; 
+import { createAppRun } from "./apprun";
 
 try {
   core.debug("run!");
@@ -33,12 +32,20 @@ async function run() {
 
     core.info(`AppRun created: ${app.id} at ${app.url}`);
 
+    if (app.id && app.public_url) {
+      core.setOutput("AppRun App ID: ", app.id);
+      core.info(`AppRun public URL: ${app.public_url}`);
+      core.setOutput("app_id", app.id);
+      core.setOutput("public_url", app.public_url);
+    }
+    core.setOutput("status", "success");
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message);
     } else {
-      core.setFailed('Unknown error');
+      core.setFailed("Unknown error");
     }
+    core.setOutput("status", "failure");
   }
 }
 
