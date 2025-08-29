@@ -47,7 +47,7 @@ catch (e) {
 }
 async function run() {
     try {
-        const appId = fs_1.default.readFileSync(process.env.APP_ID, 'utf-8');
+        const appId = fs_1.default.readFileSync(process.env.APP_ID, "utf-8");
         if (!appId) {
             throw new Error("APP_IDが設定されていません");
         }

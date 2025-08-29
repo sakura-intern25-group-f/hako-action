@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
-import { createAppRun } from './apprun'; 
-//import { deleteAppRun } from './apprun'; 
-import fs from 'fs';
+import { createAppRun } from "./apprun";
+//import { deleteAppRun } from './apprun';
+import fs from "fs";
 
 try {
   core.debug("run!");
@@ -33,10 +33,10 @@ async function run() {
     });
 
     core.info(`AppRun created: ${app.id} at ${app.url}`);
-    fs.writeFileSync('./apprun-id.txt', app.id);
+    fs.writeFileSync("./apprun-id.txt", app.id);
 
     if (app.id && app.public_url) {
-      core.setOutput("AppRun App ID: ", app.id);
+      core.info(`AppRun App ID: ${app.id}`);
       core.info(`AppRun public URL: ${app.public_url}`);
       core.setOutput("app_id", app.id);
       core.setOutput("public_url", app.public_url);

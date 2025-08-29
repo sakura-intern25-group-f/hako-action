@@ -38,7 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const apprun_1 = require("./apprun");
-//import { deleteAppRun } from './apprun'; 
+//import { deleteAppRun } from './apprun';
 const fs_1 = __importDefault(require("fs"));
 try {
     core.debug("run!");
@@ -67,15 +67,14 @@ async function run() {
             port,
         });
         core.info(`AppRun created: ${app.id} at ${app.url}`);
+        fs_1.default.writeFileSync("./apprun-id.txt", app.id);
         if (app.id && app.public_url) {
-            core.setOutput("AppRun App ID: ", app.id);
+            core.info(`AppRun App ID: ${app.id}`);
             core.info(`AppRun public URL: ${app.public_url}`);
             core.setOutput("app_id", app.id);
             core.setOutput("public_url", app.public_url);
         }
         core.setOutput("status", "success");
-        fs_1.default.writeFileSync('./apprun-id.txt', app.id);
-
     }
     catch (error) {
         if (error instanceof Error) {
