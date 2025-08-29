@@ -11,10 +11,6 @@ inputs:
     required: false
     default: 80
 
-outputs:
-  status: ${{ steps.js-action.outputs.status }}
-  app_id: ${{ steps.js-action.outputs.app_id }}
-  public_url: ${{ steps.js-action.outputs.public_url }}
 runs:
   using: composite
   steps:
