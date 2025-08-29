@@ -83,3 +83,8 @@ runs:
         gh pr comment ${{ github.event.number }} --body-file comment.md
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload ID
+      uses: actions/upload-artifact@v3
+      with:
+        name: apprun-id-${{ github.event.pull_request.number }}
+        path: ./apprun-id.txt

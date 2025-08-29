@@ -38,44 +38,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
 const apprun_1 = require("./apprun");
-//import { deleteAppRun } from './apprun'; 
 const fs_1 = __importDefault(require("fs"));
 try {
-    core.debug("run!");
+    core.debug("delete run!");
 }
 catch (e) {
     core.error(`${e}`);
 }
 async function run() {
     try {
-        const image = process.env.DOCKER_IMAGE;
-        const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 80;
-        const owner = process.env.OWNER;
-        const repo = process.env.REPOSITORY;
-        const branch = process.env.BRANCH;
-        const envVars = {
-            OWNER: owner,
-            REPOSITORY: repo,
-            BRANCH: branch,
-        };
-        const app = await (0, apprun_1.createAppRun)({
-            image,
-            envVars,
-            owner,
-            repo,
-            branch,
-            port,
-        });
-        core.info(`AppRun created: ${app.id} at ${app.url}`);
-        if (app.id && app.public_url) {
-            core.setOutput("AppRun App ID: ", app.id);
-            core.info(`AppRun public URL: ${app.public_url}`);
-            core.setOutput("app_id", app.id);
-            core.setOutput("public_url", app.public_url);
+        const appId = fs_1.default.readFileSync(process.env.APP_ID, 'utf-8');
+        if (!appId) {
+            throw new Error("APP_IDが設定されていません");
         }
-        core.setOutput("status", "success");
-        fs_1.default.writeFileSync('./apprun-id.txt', app.id);
-
+        const result = await (0, apprun_1.deleteAppRun)(appId);
+        core.info(result.message);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -84,7 +61,6 @@ async function run() {
         else {
             core.setFailed("Unknown error");
         }
-        core.setOutput("status", "failure");
     }
 }
 run();
